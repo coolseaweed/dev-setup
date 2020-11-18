@@ -1,8 +1,11 @@
 set nocompatible              " be iMproved, required (vi 와 호환되지 않도록 함)
 
-"----------------------------------PLUGIN--------------------------------------"
+" -------------------------------------------------------------------------
+" PLUGIN SETTING
+"   - 설치 -> :PluginInstall 
+"   - 삭제 -> :PluginClean
+" -------------------------------------------------------------------------
 " set the runtime path to include Vundle and initialize
-" 설치 -> :PluginInstall | 삭제 -> :PluginClean
 filetype off                  " required
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
@@ -28,10 +31,11 @@ Plugin 'dracula/vim'                            " skin
 
 call vundle#end()            " required
 filetype plugin indent on    " required
-"------------------------------------------------------------------------------"
 
 
-"-----------------------------------SKIN---------------------------------------"
+" --------------------------------------------------------------------------
+" SKIN SETTING
+" --------------------------------------------------------------------------
 " Colorscheme
 "syntax enable
 "let g:solarized_termcolors=256
@@ -40,11 +44,13 @@ filetype plugin indent on    " required
 
 syntax on
 color dracula
-"------------------------------------------------------------------------------"
 
 
-"-------------------------------CUSTOM SETTING---------------------------------"
-" Comment -> 주석 , LineNr -> 행의 라인
+" ----------------------------------------------------------------------------
+" CUSTUM SETTING 
+"   - Comment -> 주석
+"   - LineNr -> 행의 라인
+" ----------------------------------------------------------------------------
 highlight Comment term=bold cterm=bold ctermfg=86
 highlight LineNr term=bold cterm=NONE ctermfg=Grey ctermbg=NONE gui=NONE guifg=DarkGrey guibg=NONE
 set ruler                               " 화면 오른쪽 아래에 커서 위치 표시
@@ -92,6 +98,7 @@ set splitbelow                          " 'split', 'vsplit' 명령어 사용 가
 set visualbell                          " 키를 잘못눌렀을 때 화면 프레시
 set mouse=a                             " 마우스 키 설정
 set t_ut=""                             " 스크린에 영역 지우게 설정
+set noeb vb t_vb=                             " 스크린에 영역 지우게 설정
 
 " 다음 확장자를 가진 파일들을 무시함
 set wildignore+=*.so,*.swp,*.zip,*.pyc
@@ -156,10 +163,12 @@ autocmd Filetype scss setlocal ts=2 sts=2 sw=2
 autocmd Filetype css setlocal ts=2 sts=2 sw=2
 autocmd Filetype python setlocal ts=4 sts=4 sw=4
 autocmd Filetype cpp setlocal ts=2 sts=2 sw=2
-"------------------------------------------------------------------------------"
 
 
-"-------------------------------PLUGIN SETTING---------------------------------"
+
+" ------------------------------------------------------------------------------
+" PLUGIN SETTING
+" ------------------------------------------------------------------------------
 " NERDTree`
 "map <C-e> <plug>NERDTreeTabsToggle<CR>
 "map <leader>e :NERDTreeFind<CR>
@@ -277,4 +286,3 @@ let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:user_emmet_mode='a'    "enable all function in all mode.
 let g:user_emmet_install_global = 0
 autocmd FileType html,css EmmetInstall
-"------------------------------------------------------------------------------"
