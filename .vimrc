@@ -38,7 +38,6 @@ filetype plugin indent on    " required
 "set background=dark
 "colorscheme desert
 
-" dracular
 syntax on
 color dracula
 "------------------------------------------------------------------------------"
@@ -81,7 +80,7 @@ set undofile                            " 자동으로 실행 취소(undo) 기�
 set ignorecase                          " 검색 시 대소문자를 무시함
 set smartcase                           " 검색 문자열이 모두 소문자이면 대소문자를 구분하지 않고, 대문자가 하나라도 있으면 대소문자 구분
 set gdefault                            " '찾아바꾸기' 할때 subtitute 플래그 'g'가 기본설정됨
-set colorcolumn=80                      " 화면에 80번째 칼럼에 색깔 라인을 생성
+" set colorcolumn=80                      " 화면에 80번째 칼럼에 색깔 라인을 생성
 " colorcolumn의 색상을 빨간색으로 설정
 highlight colorcolumn ctermbg=red       
 set textwidth=79                        " 79번째 글자를 넘기면 자동으로 개행됨
@@ -91,6 +90,8 @@ set nojoinspaces                        " J 명령어로 줄을 이어 붙일 �
 set splitright                          " 
 set splitbelow                          " 'split', 'vsplit' 명령어 사용 가능
 set visualbell                          " 키를 잘못눌렀을 때 화면 프레시
+set mouse=a                             " 마우스 키 설정
+set t_ut=""                             " 스크린에 영역 지우게 설정
 
 " 다음 확장자를 가진 파일들을 무시함
 set wildignore+=*.so,*.swp,*.zip,*.pyc
@@ -100,7 +101,7 @@ set wildignore+=*/.sass-cache/*
 set wildignore+=*.swp,*~,._*
 
 " 임시 set clipboard=unnamed
-let mapleader=","            " <leader> 는 기본적으로 '\'를 가리킴 ,를 \로 사용가능
+let mapleader="."            " <leader> 는 기본적으로 '\'를 가리킴 ,를 \로 사용가능
 
 " insert/normal 모드의 cursor 모양 변경
 if &term =~ "screen."
@@ -124,7 +125,7 @@ nmap <tab> %
 vmap <tab> %
 nnoremap <leader><space> :nohlsearch<CR>
 nnoremap <Alt-Left> <C-O>
-nnoremap <Leader>rc :rightbelow vnew $MYVIMRC<CR>   " 오른쪽 아래 창에 설정파일 로드
+nnoremap <leader>rc :rightbelow vnew $MYVIMRC<CR>   " 오른쪽 아래 창에 설정파일 로드
 noremap <c-h> <c-w>h                                " window 왼쪽 이동
 noremap <c-j> <c-w>j                                " window 아래쪽 이동
 noremap <c-k> <c-w>k                                " window 위쪽 이동
@@ -137,6 +138,11 @@ noremap <C-J> <C-W>j
 noremap <C-K> <C-W>k
 noremap <C-H> <C-W>h
 noremap <C-L> <C-W>l
+" buffer move
+nnoremap <F5> :buffers<CR>:buffer<Space>
+nnoremap <leader>/ :bn<CR>
+nnoremap <leader>, :bp<CR>
+
 
 " tags
 set tags=./tags,tags

@@ -4,7 +4,7 @@ set -o pipefail
 
 cd "$(dirname "${BASH_SOURCE}")";
 
-git pull origin master;
+git pull origin main;
 
 function envSetup() {
     # bash, vim 설정파일 복사
