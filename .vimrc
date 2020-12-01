@@ -1,56 +1,192 @@
 set nocompatible              " be iMproved, required (vi 와 호환되지 않도록 함)
 
-" -------------------------------------------------------------------------
-" PLUGIN SETTING
+"-------------------------------------------------------------------------
+" PLUGIN PACKAGES
+"-------------------------------------------------------------------------
 "   - 설치 -> :PluginInstall 
 "   - 삭제 -> :PluginClean
-" -------------------------------------------------------------------------
-" set the runtime path to include Vundle and initialize
+
+
 filetype off                  " required
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
 
-" let Vundle manage Vundle, required
+
 Plugin 'gmarik/Vundle.vim'
-Plugin 'scrooloose/nerdtree'                    " VIM용 탐색기
+
+" ----- Fast editing -----
 Plugin 'scrooloose/nerdcommenter'               " 주석을 쉽게 달 수 있도록 도와줌
-Plugin 'kien/ctrlp.vim'                         " Ctrl + p 파일 검색
-Plugin 'majutsushi/tagbar'                      " sidebar 에서 현재 파일의 ctag들을 표시
 Plugin 'nathanaelkane/vim-indent-guides'        " indent levels을 표시
-Plugin 'AutoComplPop'                           " 자동완성 기능(Ctrl + P)를 자동으로 표시
-Plugin 'ervandew/supertab'						" <Tab>을 통해 자동완성 기능 목록 이동 가능
-Plugin 'othree/html5.vim'
-Plugin 'mattn/emmet-vim'
-Plugin 'moll/vim-node'							" Node
+
+" ----- IDE features -----
+Plugin 'scrooloose/nerdtree'                    " VIM용 탐색기
+Plugin 'kien/ctrlp.vim'                         " Ctrl + p 파일 검색
+Plugin 'scrooloose/syntastic'                   " Syntax error check
 Plugin 'vim-airline/vim-airline'				" airline
+
+" ----- Code completion -----
+Plugin 'ervandew/supertab'						" <Tab>을 통해 자동완성 기능 목록 이동 가능
+Plugin 'AutoComplPop'                           " 자동완성 기능(Ctrl + P)를 자동으로 표시
+Plugin 'majutsushi/tagbar'                      " sidebar 에서 현재 파일의 ctag들을 표시
+
+" ----- Color schemes -----
 Plugin 'flazz/vim-colorschemes'                 " skin
 Plugin 'desert-warm-256'                        " skin
 Plugin 'dracula/vim'                            " skin
+
+" ----- Language enhancement -----
+Plugin 'moll/vim-node'							" Javascript:Node
+Plugin 'othree/html5.vim'                       " HTML
+Plugin 'mattn/emmet-vim'                        " HTML
 
 call vundle#end()            " required
 filetype plugin indent on    " required
 
 
-" --------------------------------------------------------------------------
+"------------------------------------------------------------------------------
+" PLUGIN SETTING
+"------------------------------------------------------------------------------
+
+" ----- NERDTree -----
+"map <C-e> <plug>NERDTreeTabsToggle<CR>
+"map <leader>e :NERDTreeFind<CR>
+nmap <F1> :NERDTreeToggle<CR>
+nmap <leader>n :NERDTreeToggle<CR>
+nmap <leader>nf :NERDTreeFind<CR>
+let NERDTreeShowBookmarks=1
+let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git', '\.hg', '\.svn', '\.bzr']
+let NERDTreeChDirMode=0
+let NERDTreeQuitOnOpen=1
+let NERDTreeMouseMode=2
+let NERDTreeShowHidden=1
+let NERDTreeKeepTreeInNewTab=1
+let g:nerdtree_tabs_open_on_gui_startup=0
+
+
+" ----- Tagbar -----
+nnoremap <silent> <leader>t<space> :TagbarToggle<CR>
+let g:tagbar_autofocus = 1
+let g:tagbar_autoclose = 1
+
+
+" ----- Ctrlp -----
+nnoremap <leader>b :CtrlPBuffer<CR>
+let g:ctrlp_working_path_mode = 0
+let g:ctrlp_follow_symlinks = 1
+let g:ctrlp_mruf_case_sensitive = 0
+"let g:ctrlp_custom_ignore = {
+"\ 'dir':  '\v[\/]\.(git|hg|svn)$',
+"\ 'file': '\v\.(exe|so|dll)$',
+"\ 'link': 'some_bad_symbolic_links',
+"\ }
+let g:ctrlp_custom_ignore = {
+            \ 'dir':  '\.git$\|\.hg$\|\.svn$',
+            \ 'file': '\.so$\|\.pyc$' }
+
+
+" ----- Indent-guides -----
+autocmd filetype python,html,htmldjango,htmljinja :IndentGuidesEnable
+let g:indent_guides_auto_colors = 0
+let g:indent_guides_enable_on_vim_startup = 1
+"autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd ctermfg=none ctermbg=234
+"autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd ctermfg=none ctermbg=235
+"autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermfg=none ctermbg=235
+"autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  ctermbg=black
+"autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=darkgrey
+"let g:indent_guides_start_level = 2
+"let g:indent_guides_guide_size = 1
+
+
+" ----- python-mode -----
+let g:pymode_folding = 0
+let g:pymode_rope_goto_definition_bind = '<leader>d<space>'
+let g:pymode_lint_ignore = "E265,W0612,W0611"
+let g:pymode_rope_completion = 0
+
+ 
+" ----- cscope -----
+function! LoadCscope()
+    let db = findfile("cscope.out", ".;")
+    if (!empty(db))
+        let path = strpart(db, 0, match(db, "/cscope.out$"))
+        set nocscopeverbose " suppress 'duplicate connection' error
+        exe "cs add " . db . " " . path
+        set cscopeverbose
+    endif
+endfunction
+au BufEnter /* call LoadCscope()
+
+nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR> 
+nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>    
+nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>    
+nmap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>    
+nmap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>    
+nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>    
+nmap <C-\>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR> 
+nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>    
+
+set csprg=/usr/bin/cscope
+set csto=1
+set csverb
+
+command WQ wq
+command Wq wq
+command W w
+command Q q
+command WA wa
+command Wa wa
+
+nnoremap <silent> <leader>a<space> :A<CR>
+                    
+
+" ----- supertab -----
+let g:SuperTabDefaultCompletionType = '<c-n>'		" Tab으로 목록 위에서 아래로 이동
+let g:SuperTabCrMapping=1							" 자동완성 후 Enter 줄바꿈 막기
+" tab 간격 띄우기 ,<tab>으로 가능
+inoremap <Leader><tab> <C-q><tab>
+
+
+" ----- vim-node -----
+" <C-w>f by default opens it in a horizontal split. To have it open vertically
+autocmd User Node
+  \ if &filetype == "javascript" |
+  \   nmap <buffer> <C-w>f <Plug>NodeVSplitGotoFile |
+  \   nmap <buffer> <C-w><C-f> <Plug>NodeVSplitGotoFile |
+  \ endif
+
+
+" ----- airline -----
+set laststatus=2
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#buffer_nr_show = 1
+
+
+" ----- emmet-vim -----
+"   - tutorial: https://raw.githubusercontent.com/mattn/emmet-vim/master/TUTORIAL)
+let g:user_emmet_mode='a'    "enable all function in all mode.
+let g:user_emmet_install_global = 0
+autocmd FileType html,css EmmetInstall
+
+
+"--------------------------------------------------------------------------
 " SKIN SETTING
-" --------------------------------------------------------------------------
-" Colorscheme
+"--------------------------------------------------------------------------
+syntax on
+color dracula
 "syntax enable
 "let g:solarized_termcolors=256
 "set background=dark
 "colorscheme desert
 
-syntax on
-color dracula
 
 
-" ----------------------------------------------------------------------------
+"----------------------------------------------------------------------------
 " CUSTUM SETTING 
+"----------------------------------------------------------------------------
 "   - Comment -> 주석
 "   - LineNr -> 행의 라인
-" ----------------------------------------------------------------------------
+
+
 highlight Comment term=bold cterm=bold ctermfg=86
 highlight LineNr term=bold cterm=NONE ctermfg=Grey ctermbg=NONE gui=NONE guifg=DarkGrey guibg=NONE
 set ruler                               " 화면 오른쪽 아래에 커서 위치 표시
@@ -107,6 +243,7 @@ set wildignore+=*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz
 set wildignore+=*/.sass-cache/*
 set wildignore+=*.swp,*~,._*
 
+
 " 임시 set clipboard=unnamed
 let mapleader="."            " <leader> 는 기본적으로 '\'를 가리킴 ,를 \로 사용가능
 
@@ -123,7 +260,7 @@ else
     let &t_te.="\<Esc>[0 q"
 endif
 
-" 키 맵핑
+" Key mapping
 nnoremap j gj
 nnoremap k gk
 nnoremap Y y$
@@ -166,123 +303,4 @@ autocmd Filetype cpp setlocal ts=2 sts=2 sw=2
 
 
 
-" ------------------------------------------------------------------------------
-" PLUGIN SETTING
-" ------------------------------------------------------------------------------
-" NERDTree`
-"map <C-e> <plug>NERDTreeTabsToggle<CR>
-"map <leader>e :NERDTreeFind<CR>
-nmap <F1> :NERDTreeToggle<CR>
-nmap <leader>n :NERDTreeToggle<CR>
-nmap <leader>nf :NERDTreeFind<CR>
-let NERDTreeShowBookmarks=1
-let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git', '\.hg', '\.svn', '\.bzr']
-let NERDTreeChDirMode=0
-let NERDTreeQuitOnOpen=1
-let NERDTreeMouseMode=2
-let NERDTreeShowHidden=1
-let NERDTreeKeepTreeInNewTab=1
-let g:nerdtree_tabs_open_on_gui_startup=0
 
-
-" Tagbar
-nnoremap <silent> <leader>t<space> :TagbarToggle<CR>
-let g:tagbar_autofocus = 1
-let g:tagbar_autoclose = 1
-
-
-" Ctrlp
-nnoremap <leader>b :CtrlPBuffer<CR>
-let g:ctrlp_working_path_mode = 0
-let g:ctrlp_follow_symlinks = 1
-let g:ctrlp_mruf_case_sensitive = 0
-"let g:ctrlp_custom_ignore = {
-"\ 'dir':  '\v[\/]\.(git|hg|svn)$',
-"\ 'file': '\v\.(exe|so|dll)$',
-"\ 'link': 'some_bad_symbolic_links',
-"\ }
-let g:ctrlp_custom_ignore = {
-            \ 'dir':  '\.git$\|\.hg$\|\.svn$',
-            \ 'file': '\.so$\|\.pyc$' }
-
-
-" Indent-guides
-autocmd filetype python,html,htmldjango,htmljinja :IndentGuidesEnable
-let g:indent_guides_auto_colors = 0
-"autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd ctermfg=none ctermbg=234
-"autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd ctermfg=none ctermbg=235
-"autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermfg=none ctermbg=235
-"autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  ctermbg=black
-"autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=darkgrey
-"let g:indent_guides_start_level = 2
-"let g:indent_guides_guide_size = 1
-
-
-" python-mode
-let g:pymode_folding = 0
-let g:pymode_rope_goto_definition_bind = '<leader>d<space>'
-let g:pymode_lint_ignore = "E265,W0612,W0611"
-let g:pymode_rope_completion = 0
-
- 
-" cscope
-function! LoadCscope()
-    let db = findfile("cscope.out", ".;")
-    if (!empty(db))
-        let path = strpart(db, 0, match(db, "/cscope.out$"))
-        set nocscopeverbose " suppress 'duplicate connection' error
-        exe "cs add " . db . " " . path
-        set cscopeverbose
-    endif
-endfunction
-au BufEnter /* call LoadCscope()
-
-nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR> 
-nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>    
-nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>    
-nmap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>    
-nmap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>    
-nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>    
-nmap <C-\>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR> 
-nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>    
-
-set csprg=/usr/bin/cscope
-set csto=1
-set csverb
-
-command WQ wq
-command Wq wq
-command W w
-command Q q
-command WA wa
-command Wa wa
-
-nnoremap <silent> <leader>a<space> :A<CR>
-                    
-
-" supertab
-let g:SuperTabDefaultCompletionType = '<c-n>'		" Tab으로 목록 위에서 아래로 이동
-let g:SuperTabCrMapping=1							" 자동완성 후 Enter 줄바꿈 막기
-" tab 간격 띄우기 ,<tab>으로 가능
-inoremap <Leader><tab> <C-q><tab>
-
-
-" vim-node
-" <C-w>f by default opens it in a horizontal split. To have it open vertically
-autocmd User Node
-  \ if &filetype == "javascript" |
-  \   nmap <buffer> <C-w>f <Plug>NodeVSplitGotoFile |
-  \   nmap <buffer> <C-w><C-f> <Plug>NodeVSplitGotoFile |
-  \ endif
-
-
-" airline
-set laststatus=2
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#buffer_nr_show = 1
-
-
-" emmet-vim (https://raw.githubusercontent.com/mattn/emmet-vim/master/TUTORIAL)
-let g:user_emmet_mode='a'    "enable all function in all mode.
-let g:user_emmet_install_global = 0
-autocmd FileType html,css EmmetInstall
