@@ -137,9 +137,4 @@ fi
 #fi
 #unset __conda_setup
 ## <<< conda initialize <<<
-#
-#export PATH=/usr/local/cuda-10.0/bin${PATH:+:${PATH}} 
-#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-10.0/lib64
-#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu
-#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/openmpi/lib
-#
+
