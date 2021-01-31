@@ -122,8 +122,7 @@ if ! shopt -oq posix; then
   fi
 fi
 
-#
-## >>> conda initialize >>>
+# --------------------- conda initialize ----------------------- #
 ## !! Contents within this block are managed by 'conda init' !!
 #__conda_setup="$('/home/users/tom/ENV/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
 #if [ $? -eq 0 ]; then
@@ -136,5 +135,8 @@ fi
 #    fi
 #fi
 #unset __conda_setup
-## <<< conda initialize <<<
 
+# --------------------- java script env ----------------------- #
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
