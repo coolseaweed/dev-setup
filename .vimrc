@@ -19,8 +19,8 @@ Plugin 'scrooloose/nerdcommenter'               " 주석을 쉽게 달 수 있�
 Plugin 'nathanaelkane/vim-indent-guides'        " indent levels을 표시
 
 " ----- IDE features -----
-Plugin 'scrooloose/nerdtree'                    " VIM용 탐색기
-Plugin 'kien/ctrlp.vim'                         " Ctrl + p 파일 검색
+"Plugin 'scrooloose/nerdtree'                    " VIM용 탐색기
+"Plugin 'kien/ctrlp.vim'                         " Ctrl + p 파일 검색
 Plugin 'scrooloose/syntastic'                   " Syntax error check
 Plugin 'vim-airline/vim-airline'				" airline
 
@@ -169,7 +169,8 @@ autocmd FileType html,css EmmetInstall
 
 
 " ----- syntastic -----
-execute pathogen#infect()
+" execute pathogen#infect()
+nmap <F10> :SyntasticToggleMode<CR>
 
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
