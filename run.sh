@@ -8,9 +8,9 @@ git pull origin main;
 
 function envSetup() {
     # bash, vim 설정파일 복사
-    cp ./.bashrc ~/;
+    cp ./dot_files/.bashrc ~/;
     #cp ./.bash_profile ~/;
-    cp ./.vimrc ~/;
+    cp .dot_files/.vimrc ~/;
 
     # vim vundle 설치
     rm -rf ~/.vim/bundle
