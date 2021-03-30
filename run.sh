@@ -10,7 +10,7 @@ function envSetup() {
     # bash, vim 설정파일 복사
     cp ./dot_files/.bashrc ~/;
     #cp ./.bash_profile ~/;
-    cp .dot_files/.vimrc ~/;
+    cp ./dot_files/.vimrc ~/;
 
     # vim vundle 설치
     rm -rf ~/.vim/bundle
