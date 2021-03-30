@@ -244,7 +244,6 @@ set number                              " 라인 넘버 표시
 "set noundofile                         " 실행 취소(undo) 기록을 실행 취소 파일에 저장하지 않음
 set ignorecase                          " 검색 시 대소문자를 무시함
 set smartcase                           " 검색 문자열이 모두 소문자이면 대소문자를 구분하지 않고, 대문자가 하나라도 있으면 대소문자 구분
-set noswapfile
 set gdefault                            " '찾아바꾸기' 할때 subtitute 플래그 'g'가 기본설정됨
 " set colorcolumn=80                      " 화면에 80번째 칼럼에 색깔 라인을 생성
 " colorcolumn의 색상을 빨간색으로 설정
