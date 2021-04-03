@@ -123,18 +123,19 @@ if ! shopt -oq posix; then
 fi
 
 # --------------------- conda initialize ----------------------- #
-## !! Contents within this block are managed by 'conda init' !!
-#__conda_setup="$('/home/users/tom/ENV/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
-#if [ $? -eq 0 ]; then
-#    eval "$__conda_setup"
-#else
-#    if [ -f "/home/users/tom/ENV/miniconda3/etc/profile.d/conda.sh" ]; then
-#        . "/home/users/tom/ENV/miniconda3/etc/profile.d/conda.sh"
-#    else
-#        export PATH="/home/users/tom/ENV/miniconda3/bin:$PATH"
-#    fi
-#fi
-#unset __conda_setup
+
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup=$("$HOME/ENV/miniconda3/bin/conda" "shell.bash" "hook" 2> /dev/null)
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "$HOME/ENV/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "$HOME/ENV/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="$HOME/ENV/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
 
 # --------------------- java script env ----------------------- #
 export NVM_DIR="$HOME/.nvm"
