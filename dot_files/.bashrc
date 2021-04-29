@@ -141,3 +141,10 @@ unset __conda_setup
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+
+conda activate stone82
+export SCREENDIR=$HOME/.screen
+[ -d $SCREENDIR ] || mkdir -p -m 700 $SCREENDIR
+
+

@@ -7,15 +7,17 @@ cd "$(dirname "${BASH_SOURCE}")";
 git pull origin main;
 
 function envSetup() {
-    # bash, vim 설정파일 복사
+
+    # copying bash, vim configs
     cp ./dot_files/.bashrc ~/;
     #cp ./.bash_profile ~/;
     cp ./dot_files/.vimrc ~/;
 
-    # vim vundle 설치
+    # Install vim vundle 
     rm -rf ~/.vim/bundle
     git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-    # vundle plugins 설치
+    
+    # Install vundle plugins 
     vim +PluginInstall +qall
 }
 
