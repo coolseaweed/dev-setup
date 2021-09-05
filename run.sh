@@ -1,23 +1,16 @@
 #!/bin/bash
-set -e					# 모든 라인의 실행 결과를 검사해서 실패할 경우 스크립트 실행 종료
+set -e	
 set -o pipefail
 
 cd "$(dirname "${BASH_SOURCE}")";
 
-git pull origin main;
 
 function envSetup() {
 
-    # copying bash, vim configs
-    cp ./dot_files/.bashrc ~/;
-    #cp ./.bash_profile ~/;
-    cp ./dot_files/.vimrc ~/;
+    cp ./dot_files/.bashrc ./dot_files/.vimrc ~/;
 
-    # Install vim vundle 
     rm -rf ~/.vim/bundle
     git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-    
-    # Install vundle plugins 
     vim +PluginInstall +qall
 }
 
