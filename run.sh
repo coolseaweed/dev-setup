@@ -7,6 +7,8 @@ cd "$(dirname "${BASH_SOURCE}")";
 
 function envSetup() {
 
+    cp ~/.bashrc ~/.bashrc.orig
+    cp ~/.vimrc ~/.vimrc.orig
     cp ./dot_files/.bashrc ./dot_files/.vimrc ~/;
 
     rm -rf ~/.vim/bundle
@@ -14,7 +16,7 @@ function envSetup() {
     vim +PluginInstall +qall
 }
 
-read -p "This may overwrite existing your current setting files in home directory. Are you sure? (y/n) " -n 1;
+read -p "Your current setting files (~/.bashrc & ~/.vimrc) will copy with '*.orig' extension in $HOME directory. Are you sure? (y/n) " -n 1;
 echo "";
 if [[ $REPLY =~ ^[Yy]$ ]]; then
 	envSetup;
