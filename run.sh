@@ -8,10 +8,10 @@ cd "$(dirname "${BASH_SOURCE}")";
 function envSetup() {
 
     cp ~/.bashrc ~/.bashrc.orig
-    cp ~/.vimrc ~/.vimrc.orig
+    [ -f ~/.vimrc ] && cp ~/.vimrc ~/.vimrc.orig
     cp ./dot_files/.bashrc ./dot_files/.vimrc ~/;
 
-    rm -rf ~/.vim/bundle
+    [ -d ~/.vim/bundle ] && rm -rf ~/.vim/bundle
     git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
     vim +PluginInstall +qall
 }
