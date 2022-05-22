@@ -7,7 +7,7 @@ cd "$(dirname "${BASH_SOURCE}")";
 
 function envSetup() {
 
-    cp ~/.bashrc ~/.bashrc.orig
+    [ -f ~/.bashrc] && cp ~/.bashrc ~/.bashrc.orig
     [ -f ~/.vimrc ] && cp ~/.vimrc ~/.vimrc.orig
     cp ./dot_files/.bashrc ./dot_files/.vimrc ~/;
 
