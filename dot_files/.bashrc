@@ -98,9 +98,6 @@ alias l='ls -CF'
 alias l.='ls -d .* --color=auto'
 
 
-# docker command short cut
-alias det='docker exec -it'
-
 
 
 # Add an "alert" alias for long running commands.  Use like so:
@@ -128,3 +125,9 @@ if ! shopt -oq posix; then
 fi
 
 
+# docker command short cut
+alias det='docker exec -it'
+
+
+# add group id for docker-compose
+GID=$(id -g)
