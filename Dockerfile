@@ -4,7 +4,6 @@ ARG USERNAME=docker
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
-USER $USERNAME
 
 # Create the user
 # TODO: bugfix for group already exist case
@@ -24,5 +23,7 @@ RUN apt-get update \
 # Install basic packages
 RUN apt-get update && apt-get install -y \
     xz-utils git 
+
+USER $USERNAME
 
 SHELL ["/bin/bash", "-c"]
