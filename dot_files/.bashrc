@@ -147,4 +147,4 @@ __bash_prompt() {
     unset -f __bash_prompt
 }
 __bash_prompt
-export PROMPT_DIRTRIM=4
+export PROMPT_DIRTRIM=0
