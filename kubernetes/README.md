@@ -1,8 +1,8 @@
 # Kubeadm Install Guide
 
 Script is compatibled with:
-- [x] Mercury
 - [x] Ubuntu 20.04 LTS
+- [ ] Ubuntu 21.04 LTS
 
 ## Step 1. install container runtime
 ```bash
