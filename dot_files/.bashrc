@@ -148,3 +148,10 @@ __bash_prompt() {
 }
 __bash_prompt
 export PROMPT_DIRTRIM=0
+
+
+# kubernetes
+source <(kubectl completion bash)
+alias k=kubectl
+complete -F __start_kubectl k
+export KUBE_EDITOR="vim"

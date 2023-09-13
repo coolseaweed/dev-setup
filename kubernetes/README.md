@@ -10,13 +10,27 @@ Script is compatibled with:
 ``` 
 
 ## Step 2. install kubeadm + kubelet + kubectl
-```
+```bash
 ./install_kubeadm.sh
 ```
 
 ## Step 3. setup cluster (only master node)
+```bash
+CIDR_IP_ADDRESS=${CIDR_IP_ADDRESS} ./setup_cluster.sh
 ```
-./setup_cluster.sh
+
+## Step 4. Install CNI (weave-net)
+```bash
+kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+
+k edit ds weave-net -n kube-system
+----------------------------------
+      containers:
+        - name: weave
+          env:
+            - name: IPALLOC_RANGE
+              value: {CIDR-ADDR}
+----------------------------------
 ```
 
 
