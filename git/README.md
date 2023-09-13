@@ -6,7 +6,8 @@
 
 ## add account
 ```bash
-git config user.nae
+git config user.name <username>
+git config user.email <email>
 ```
 
 ## Cross Check
