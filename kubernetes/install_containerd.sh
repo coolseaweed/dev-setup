@@ -2,6 +2,8 @@
 
 # run as root (sudo -i)
 
+BACKEND=${BACKEND:-UBUNTU} 
+
 cat <<EOF | tee /etc/modules-load.d/k8s.conf
 overlay
 br_netfilter
@@ -22,7 +24,7 @@ sysctl --system
 
 
 # Add Docker's official GPG key:
-../docker/install_docker.sh
+BACKEND=${BACKEND} ../docker/install_docker.sh
 
 
 cp ./config.toml /etc/containerd/config.toml
