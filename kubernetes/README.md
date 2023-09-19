@@ -86,6 +86,7 @@ k edit ds weave-net -n kube-system
 
 
 ## Cross check
+## Cross check (will be moved to Wiki section)
 쿠버네티스 컴포넌트끼리 통신하기위해 특정 포트가 반드시 열려 있어야한다.
 ```bash
 telent 127.0.0.1 6443
@@ -100,3 +101,50 @@ Escape character is '^]'.
 ## Reference
 - [라즈베리파이로 쿠버네티스 클러스터 만들기](https://www.binaryflavor.com/raspberry-pi-kubernetes-1/)
 - [ubuntu20.04 kubeadm 설치하기](https://velog.io/@simgyuhwan/kubeadm-ubuntu-20.04-%EC%84%A4%EC%B9%98)
+### commands
+**view services**
+  ```
+  cat /etc/systemd/system/kube-apiserver.service
+  ```
+- service logs
+  ```bash
+  # system log
+  journalctl -u <service name> -l
+
+  # kubeadm log
+  k logs <target>
+
+  # container
+
+  ```
+**Security**
+- Certificate Autority (CA) Generation
+  ```bash
+  # Generate Keys
+  openssl genrsa -out ca.key 2048
+
+  # Certificate Signing Request
+  openssl req -new -key ca.key -subj "/CN=KUBERNETES-CA" -out ca.csr
+
+  # Sign Certificates (self sign)
+  openssl x509 -req -in ca.csr -signkey ca.key -out ca.crt 
+  ```
+
+- admin user
+  ```bash
+  
+  # Generate keys
+  openssl genrsa -out admin.key 2048
+
+  # Generate CSR
+  openssl req -new -key admin.key -subj \
+    "/CN=kube-admin/O=system:masters" -out admin.csr
+  
+  # Get Sign from CA
+  openssl x509 -req -in admin.csr -CA ca.crt -CAkey ca.key -out admin.crt 
+
+  ```
+- inspect cert file
+  ```bash
+  openssl x509 -in /etc/kubernetes/pki/apiserver.crt -text -noout
+  ```
