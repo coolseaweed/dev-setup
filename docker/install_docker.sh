@@ -4,6 +4,7 @@
 
 BACKEND=${BACKEND:-UBUNTU} 
 if [ $BACKEND == "RASP" ];then
+  # DEBUGGING
   DOCKER_URL="https://download.docker.com/linux/raspbian"
 elif [ $BACKEND == "UBUNTU" ];then
   DOCKER_URL="https://download.docker.com/linux/ubuntu"
