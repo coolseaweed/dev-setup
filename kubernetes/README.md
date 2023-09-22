@@ -2,7 +2,7 @@
 
 Script is compatibled with:
 - [x] Ubuntu 20.04 LTS
-- [ ] Ubuntu 21.04 LTS
+- [ ] Ubuntu 22.04 LTS
 
 ## Step 1. install container runtime
 ```bash
