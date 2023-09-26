@@ -53,38 +53,38 @@ fi
 # ------------------------
 # install container runtime
 # ------------------------
-# # uninstall all conflicting packages
-# for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do
-#     apt-get remove $pkg; 
-# done
+# uninstall all conflicting packages
+for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do
+    apt-get remove $pkg; 
+done
 
-# # install containerd
-# apt-get update && apt-get install -y ca-certificates curl gnupg && \
-# install -m 0755 -d /etc/apt/keyrings && \
-# curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg  --batch --yes --dearmor -o /etc/apt/keyrings/docker.gpg && \
-# chmod a+r /etc/apt/keyrings/docker.gpg && \
-# echo "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-#   "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
-# apt-get update && apt-get -y install containerd.io
+# install containerd
+apt-get update && apt-get install -y ca-certificates curl gnupg && \
+install -m 0755 -d /etc/apt/keyrings && \
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg  --batch --yes --dearmor -o /etc/apt/keyrings/docker.gpg && \
+chmod a+r /etc/apt/keyrings/docker.gpg && \
+echo "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
+apt-get update && apt-get -y install containerd.io
 
-# # configure containerd the `systemd` cgroup driver
-# mkdir -p /etc/containerd && cat <<EOF | tee /etc/containerd/config.toml
-# [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
-#   [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
-#     SystemdCgroup = true
-# EOF
-# systemctl restart containerd
+# configure containerd the `systemd` cgroup driver
+mkdir -p /etc/containerd && cat <<EOF | tee /etc/containerd/config.toml
+[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+  [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+    SystemdCgroup = true
+EOF
+systemctl restart containerd
 
 
 # ------------------------
 # install kubeadm & kubelet & kubectl
 # ------------------------
 
-# apt-get update && apt-get install -y apt-transport-https ca-certificates curl && \
-# curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | gpg --batch --yes --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg && \
-# echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list && \
-# apt-get update && apt-get install -y kubelet kubeadm kubectl && \
-# apt-mark hold kubelet kubeadm kubectl
+apt-get update && apt-get install -y apt-transport-https ca-certificates curl && \
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | gpg --batch --yes --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg && \
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list && \
+apt-get update && apt-get install -y kubelet kubeadm kubectl && \
+apt-mark hold kubelet kubeadm kubectl
 
 
 # ------------------------
@@ -95,7 +95,7 @@ if [[ $master == true ]]; then
 
     echo $EXTRA_ARGS
     kubeadm init $EXTRA_ARGS && \
-    
+
     mkdir -p $HOME/.kube && \
     cp -i /etc/kubernetes/admin.conf $HOME/.kube/config && \
     chown $(id -u):$(id -g) $HOME/.kube/config
