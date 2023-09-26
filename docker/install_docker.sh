@@ -2,15 +2,8 @@
 
 # please run via sudor (sudo -i)
 
-BACKEND=${BACKEND:-UBUNTU} 
-if [ $BACKEND == "RASP" ];then
-  # DEBUGGING
-  DOCKER_URL="https://download.docker.com/linux/raspbian"
-elif [ $BACKEND == "UBUNTU" ];then
-  DOCKER_URL="https://download.docker.com/linux/ubuntu"
-fi
+DOCKER_URL="https://download.docker.com/linux/ubuntu"
 
-echo -e "* BACKEND: ${BACKEND}\n* DOCKER_URL: $DOCKER_URL"
 
 apt-get update && apt-get install ca-certificates curl gnupg && \
 install -m 0755 -d /etc/apt/keyrings && \

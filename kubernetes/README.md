@@ -2,24 +2,17 @@
 
 Script is compatibled with:
 - [x] Ubuntu 20.04 LTS
-- [ ] Ubuntu 21.04 LTS
+- [ ] Ubuntu 22.04 LTS
 
-## Step 1. install container runtime
+## install kubernetes (kubeadm)
+- `CIDR-ADDR(default)`: `10.244.0.0/16`
+
 ```bash
-./install_containerd.sh
+# only master node add <--master true> commands
+./install_kubernetes.sh [--master true]
 ``` 
 
-## Step 2. install kubeadm + kubelet + kubectl
-```bash
-./install_kubeadm.sh
-```
-
-## Step 3. setup cluster (only master node)
-```bash
-CIDR_IP_ADDRESS=${CIDR_IP_ADDRESS} ./setup_cluster.sh
-```
-
-## Step 4. Install CNI (weave-net)
+## setup CNI (weave-net)
 ```bash
 kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
 
@@ -33,10 +26,8 @@ k edit ds weave-net -n kube-system
 ----------------------------------
 ```
 
-
-
-## Remove kubeadm
-```
+## remove kubeadm
+```bash
 ./remove_kubeadm.sh
 ```
 
@@ -89,7 +80,7 @@ k edit ds weave-net -n kube-system
 ## Cross check (will be moved to Wiki section)
 쿠버네티스 컴포넌트끼리 통신하기위해 특정 포트가 반드시 열려 있어야한다.
 ```bash
-telent 127.0.0.1 6443
+telnet 127.0.0.1 6443
 ----------------
 Trying 127.0.0.1...
 Connected to 127.0.0.1.
