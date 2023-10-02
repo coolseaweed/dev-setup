@@ -2,12 +2,12 @@
 # run as root (sudo -i)
 
 
-POSITIONAL_ARGS=()
-CIDR_IP_ADDRESS="10.244.0.0/16"
-APISERVER_ADVERTISE_ADDRESS=$(hostname -I | awk '{print $1}')
-master=false
+# POSITIONAL_ARGS=()
+# CIDR_IP_ADDRESS="10.244.0.0/16"
+# APISERVER_ADVERTISE_ADDRESS=$(hostname -I | awk '{print $1}')
+# master=false
 
-. ../utils/parse_options.sh 
+# . ../utils/parse_options.sh 
 
 
 
@@ -87,16 +87,16 @@ apt-get update && apt-get install -y kubelet kubeadm kubectl && \
 apt-mark hold kubelet kubeadm kubectl
 
 
-# ------------------------
-# setup kubernetes cluster (only master node)
-# ------------------------
-if [[ $master == true ]]; then
-    EXTRA_ARGS="--pod-network-cidr=$CIDR_IP_ADDRESS --apiserver-advertise-address=$APISERVER_ADVERTISE_ADDRESS"
+# # ------------------------
+# # setup kubernetes cluster (only master node)
+# # ------------------------
+# if [[ $master == true ]]; then
+#     EXTRA_ARGS="--pod-network-cidr=$CIDR_IP_ADDRESS --apiserver-advertise-address=$APISERVER_ADVERTISE_ADDRESS"
 
-    echo $EXTRA_ARGS
-    kubeadm init $EXTRA_ARGS && \
+#     echo $EXTRA_ARGS
+#     kubeadm init $EXTRA_ARGS && \
 
-    mkdir -p $HOME/.kube && \
-    cp -i /etc/kubernetes/admin.conf $HOME/.kube/config && \
-    chown $(id -u):$(id -g) $HOME/.kube/config
-fi
+#     mkdir -p $HOME/.kube && \
+#     cp -i /etc/kubernetes/admin.conf $HOME/.kube/config && \
+#     chown $(id -u):$(id -g) $HOME/.kube/config
+# fi

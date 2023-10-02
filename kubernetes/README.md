@@ -4,29 +4,23 @@ Script is compatibled with:
 - [x] Ubuntu 20.04 LTS
 - [ ] Ubuntu 22.04 LTS
 
-## install kubernetes (kubeadm)
-- `CIDR-ADDR(default)`: `10.244.0.0/16`
-
+## Install kubernetes (kubeadm)
 ```bash
-# only master node add <--master true> commands
-./install_kubernetes.sh [--master true]
+./install_kubernetes.sh
 ``` 
 
-## setup CNI (weave-net)
+## Setup kubeadm (master only)
 ```bash
-kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+kubeadm init --pod-network-cidr="10.244.0.0/16" --apiserver-advertise-address=$(hostname -I | awk '{print $1}')
 
-k edit ds weave-net -n kube-system
-----------------------------------
-      containers:
-        - name: weave
-          env:
-            - name: IPALLOC_RANGE
-              value: {CIDR-ADDR}
-----------------------------------
+mkdir -p $HOME/.kube && \
+cp -i /etc/kubernetes/admin.conf $HOME/.kube/config && \
+chown $(id -u):$(id -g) $HOME/.kube/config
+
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 ```
 
-## remove kubeadm
+## Remove kubeadm
 ```bash
 ./remove_kubeadm.sh
 ```
@@ -41,7 +35,6 @@ k edit ds weave-net -n kube-system
     ```bash
     # to enable kubelet turn off swap
     swapoff -a && sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
-    ufw disable
     ``` 
 
 - **Problem: worknode 에서 kubectl 이 동작하지 않을 경우**
@@ -56,27 +49,13 @@ k edit ds weave-net -n kube-system
   chown $(id -u):$(id -g) $HOME/.kube/config
   ```
 
-- **Problem: node Not Ready**
+  **Problem: Raspiberry4 flannel.1 ip interface가 없을때**
+  **Solution**
   ```bash
-  k describe node <node1>로 보았을때
-  ------------------------------------------
-  Conditions:
-  Type             Status  LastHeartbeatTime                 LastTransitionTime                Reason                       Message
-  ----             ------  -----------------                 ------------------                ------                       -------
-  MemoryPressure   False   Wed, 13 Sep 2023 17:33:58 +0000   Wed, 13 Sep 2023 17:25:34 +0000   KubeletHasSufficientMemory   kubelet has sufficient memory available
-  DiskPressure     False   Wed, 13 Sep 2023 17:33:58 +0000   Wed, 13 Sep 2023 17:25:34 +0000   KubeletHasNoDiskPressure     kubelet has no disk pressure
-  PIDPressure      False   Wed, 13 Sep 2023 17:33:58 +0000   Wed, 13 Sep 2023 17:25:34 +0000   KubeletHasSufficientPID      kubelet has sufficient PID available
-  Ready            False   Wed, 13 Sep 2023 17:33:58 +0000   Wed, 13 Sep 2023 17:25:34 +0000   KubeletNotReady              container runtime network not ready: NetworkReady=false reason:NetworkPluginNotReady message:Network plugin returns error: cni plugin not initialized
-  ```
-  **Solution: CNI를 설치해주자**
-  ```bash
-  kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-
+  sudo apt-get install -y linux-modules-extra-raspi
   ```
 
 
-
-## Cross check
 ## Cross check (will be moved to Wiki section)
 쿠버네티스 컴포넌트끼리 통신하기위해 특정 포트가 반드시 열려 있어야한다.
 ```bash
