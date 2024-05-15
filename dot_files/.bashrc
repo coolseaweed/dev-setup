@@ -151,7 +151,11 @@ export PROMPT_DIRTRIM=0
 
 
 # kubernetes
-source <(kubectl completion bash)
-alias k=kubectl
-complete -F __start_kubectl k
-export KUBE_EDITOR="vim"
+#source <(kubectl completion bash)
+#alias k=kubectl
+#complete -F __start_kubectl k
+#export KUBE_EDITOR="vim"
+
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+export BASH_SILENCE_DEPRECATION_WARNING=1
