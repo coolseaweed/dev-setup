@@ -1,0 +1,8 @@
+# App shortcuts
+alt - v : open -a 'Visual Studio Code 2'
+alt - c : open -a 'Cursor'
+alt - s : open -a 'Slack'
+alt - b : open -a 'Google Chrome'
+alt - g : open -a 'ChatGPT'
+alt - t : open -a 'iTerm 2'
+
