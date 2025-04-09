@@ -15,7 +15,7 @@
 # Unload the macOS WindowManager process
 # launchctl unload -F /System/Library/LaunchAgents/com.apple.WindowManager.plist > /dev/null 2>&1 &
 
-sudo yabai --load-sa
+# sudo yabai --load-sa
 # yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
 # yabai -m signal --add event=window_focused action="sketchybar --trigger window_focus"
 # yabai -m signal --add event=display_added action="sleep 2 && $HOME/.dotfiles/yabai/create_spaces.sh"
@@ -32,38 +32,38 @@ sudo yabai --load-sa
 # yabai -m display --add 2 --space 6
 
 # global settings
-yabai -m config external_bar               all:35:0     \
-                window_border              on           \
-                mouse_follows_focus        off          \
-                focus_follows_mouse        off          \
-                window_zoom_persist        off          \
-                window_placement           second_child \
-                window_topmost             off          \
-                window_shadow              float        \
-                window_opacity             off          \
-                window_opacity_duration    0.0          \
-                active_window_opacity      1.0          \
-                normal_window_opacity      0.0          \
-                window_border_width        2            \
-                window_border_hidpi        off          \
-                window_border_radius       11           \
-                window_border_blur         off          \
-                window_animation_duration  0            \
-                active_window_border_color 0xffe1e3e4   \
-                normal_window_border_color 0xff494d64   \
-                insert_feedback_color      0xff9dd274   \
-                split_ratio                0.50         \
-                auto_balance               off          \
-                mouse_modifier             fn           \
-                mouse_action1              move         \
-                mouse_action2              resize       \
-                mouse_drop_action          swap         \
-                                                         \
-                top_padding                0            \
-                bottom_padding             0            \
-                left_padding               0            \
-                right_padding              0            \
-                window_gap                 0
+# yabai -m config external_bar               all:35:0     \
+#                 window_border              on           \
+#                 mouse_follows_focus        off          \
+#                 focus_follows_mouse        off          \
+#                 window_zoom_persist        off          \
+#                 window_placement           second_child \
+#                 window_topmost             off          \
+#                 window_shadow              float        \
+#                 window_opacity             off          \
+#                 window_opacity_duration    0.0          \
+#                 active_window_opacity      1.0          \
+#                 normal_window_opacity      0.0          \
+#                 window_border_width        2            \
+#                 window_border_hidpi        off          \
+#                 window_border_radius       11           \
+#                 window_border_blur         off          \
+#                 window_animation_duration  0            \
+#                 active_window_border_color 0xffe1e3e4   \
+#                 normal_window_border_color 0xff494d64   \
+#                 insert_feedback_color      0xff9dd274   \
+#                 split_ratio                0.50         \
+#                 auto_balance               off          \
+#                 mouse_modifier             fn           \
+#                 mouse_action1              move         \
+#                 mouse_action2              resize       \
+#                 mouse_drop_action          swap         \
+#                                                          \
+#                 top_padding                0            \
+#                 bottom_padding             0            \
+#                 left_padding               0            \
+#                 right_padding              0            \
+#                 window_gap                 0
 
 # echo "yabai configuration loaded.."
 
@@ -77,7 +77,7 @@ yabai -m config external_bar               all:35:0     \
 # yabai -m rule --add app="^Adobe Premiere Pro 2024$" role="AXLayoutArea" subrole="AXDialog" manage=on
 # #yabai -m rule --add app="^Adobe Premiere Pro 2024$" manage=off
 
-yabai -m config layout bsp
+# yabai -m config layout bsp
 
 
 # move some apps automatically to specific spaces
