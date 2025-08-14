@@ -185,3 +185,11 @@ alias gwr='gw-remove.sh'
 alias gws='gw-switch.sh'
 # alias gwc='gw-clean.sh'
 alias gw="git worktree"
+
+
+# tmux
+alias t='tmux'
+alias ta='tmux attach -t'
+alias tn='tmux new -s'
+alias tl='tmux ls'
+alias tk='tmux kill-session -t'
