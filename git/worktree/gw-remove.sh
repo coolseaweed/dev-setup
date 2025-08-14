@@ -180,6 +180,15 @@ else
     exit 1
 fi
 
+# Check if user wants to remove the branch (if not explicitly specified)
+if [[ "$REMOVE_BRANCH" == false ]] && [[ -n "$BRANCH_NAME" ]] && [[ "$SKIP_CONFIRM" != true ]]; then
+    echo ""
+    print_info "The branch '$BRANCH_NAME' still exists."
+    if confirm "Do you want to remove the branch as well?" "n"; then
+        REMOVE_BRANCH=true
+    fi
+fi
+
 # Optionally remove the branch
 if [[ "$REMOVE_BRANCH" == true ]] && [[ -n "$BRANCH_NAME" ]]; then
     print_info "Removing branch: $BRANCH_NAME"
@@ -210,5 +219,13 @@ fi
 # Clean up any prunable worktrees
 print_info "Cleaning up prunable worktrees..."
 git worktree prune
+
+# Final status message
+if [[ "$REMOVE_BRANCH" == false ]] && [[ -n "$BRANCH_NAME" ]] && branch_exists "$BRANCH_NAME"; then
+    echo ""
+    print_info "Note: Branch '$BRANCH_NAME' still exists."
+    echo "To remove it later, use: git branch -d $BRANCH_NAME"
+    echo "Or use: $(basename "$0") -b $BRANCH_NAME"
+fi
 
 print_success "Cleanup complete!"

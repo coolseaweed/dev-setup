@@ -17,16 +17,16 @@ Options:
     -B, --force-branch  Create a new branch (force, overwrites if exists)
     -c, --checkout      Switch to the new worktree after creation
     -f, --from BRANCH   Create new branch from specified branch (default: current)
-    -t, --target BRANCH Set merge target branch (stored in branch config)
+    -t, --target BRANCH Set merge target branch (default: current branch for new branches)
     -h, --help          Show this help message
 
 Examples:
     $(basename "$0") feature/new-feature           # Create worktree for existing branch
-    $(basename "$0") -b feature/new-feature        # Create new branch and worktree
+    $(basename "$0") -b feature/new-feature        # Create new branch with current branch as merge target
     $(basename "$0") -p ~/projects/feature test    # Create worktree at custom path
     $(basename "$0") -P ~/work feature/test        # Create in ~/work directory
     $(basename "$0") -bc feature/new -f develop    # Create from develop and switch to it
-    $(basename "$0") -b feature/new -t main        # Create with main as merge target
+    $(basename "$0") -b feature/new -t main        # Override merge target to main
 
 EOF
     exit 0
@@ -172,6 +172,20 @@ else
     GIT_CMD="$GIT_CMD \"$BRANCH\""
 fi
 
+# Set default merge target based on from branch if specified, otherwise current branch
+if [[ -z "$TARGET_BRANCH" ]] && ([[ "$NEW_BRANCH" == true ]] || [[ "$FORCE_BRANCH" == true ]]); then
+    if [[ -n "$FROM_BRANCH" ]]; then
+        TARGET_BRANCH="$FROM_BRANCH"
+        print_info "Setting default merge target to base branch: $TARGET_BRANCH"
+    else
+        CURRENT_BRANCH=$(get_current_branch)
+        if [[ -n "$CURRENT_BRANCH" ]]; then
+            TARGET_BRANCH="$CURRENT_BRANCH"
+            print_info "Setting default merge target to current branch: $TARGET_BRANCH"
+        fi
+    fi
+fi
+
 # Show what we're about to do
 print_header "Creating Worktree"
 echo "Branch: $BRANCH"
@@ -197,15 +211,27 @@ if [[ $? -eq 0 ]]; then
         # Store merge target in git config for this branch
         git config --local "branch.${BRANCH}.mergeTarget" "$TARGET_BRANCH"
         
-        # Also set upstream if it's a new branch and target exists
+        # Set up the branch for proper PR targeting
         if [[ "$NEW_BRANCH" == true ]] || [[ "$FORCE_BRANCH" == true ]]; then
+            cd "$WORKTREE_PATH"
+            
+            # Create a git alias for easy PR creation
             if branch_exists "$TARGET_BRANCH"; then
-                cd "$WORKTREE_PATH"
-                git branch --set-upstream-to="origin/${TARGET_BRANCH}" 2>/dev/null || \
-                git branch --set-upstream-to="${TARGET_BRANCH}" 2>/dev/null || \
-                print_warning "Could not set upstream to ${TARGET_BRANCH}. You may need to set it manually."
-                cd - > /dev/null
+                git config --local "alias.pr-create" "!f() { \
+                    if command -v gh &> /dev/null; then \
+                        gh pr create --base $TARGET_BRANCH \"\$@\"; \
+                    else \
+                        echo 'Create PR with base branch: $TARGET_BRANCH'; \
+                        echo 'GitHub: gh pr create --base $TARGET_BRANCH'; \
+                        echo 'GitLab: glab mr create --target-branch $TARGET_BRANCH'; \
+                    fi; \
+                }; f"
+                
+                print_info "Created git alias 'pr-create' for this branch"
+                echo "Run 'git pr-create' to create a PR targeting $TARGET_BRANCH"
             fi
+            
+            cd - > /dev/null
         fi
         
         print_success "Merge target set to: $TARGET_BRANCH"
