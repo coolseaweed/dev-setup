@@ -159,3 +159,29 @@ export PROMPT_DIRTRIM=0
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
 export BASH_SILENCE_DEPRECATION_WARNING=1
+
+export NVM_DIR=~/.nvm
+source $(brew --prefix nvm)/nvm.sh
+alias docker="/Applications/Docker.app/Contents/Resources/bin/docker"
+alias duckdb="/Users/tom/.duckdb/cli/latest/duckdb"
+
+# skhd --reload
+# skhd --restart-service
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+
+# Claude Code aliases
+alias claude-sudo='claude --dangerously-skip-permissions'
+
+
+
+# Git worktree management scripts
+# export PATH="$PATH:~/dev-setup/git/worktree"
+# alias gwa='gw-add.sh'
+# alias gwl='gw-list.sh'
+# alias gwr='gw-remove.sh'
+# alias gws='gw-switch.sh'
+# alias gwc='gw-clean.sh'
+alias gw="git worktree"
