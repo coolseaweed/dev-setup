@@ -13,7 +13,8 @@ function envSetup() {
 
     [ -f ~/.bashrc ] && cp ~/.bashrc ~/.bashrc.orig
     [ -f ~/.vimrc ] && cp ~/.vimrc ~/.vimrc.orig
-    ln -sf $DOTFILES/.bashrc $DOTFILES/.vimrc ~/;
+    [ -f ~/.tmux.conf ] && cp ~/.tmux.conf ~/.tmux.conf.orig
+    ln -sf $DOTFILES/.bashrc $DOTFILES/.vimrc $DOTFILES/.tmux.conf ~/;
 
     [ -d ~/.vim/bundle ] && rm -rf ~/.vim/bundle
     git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
