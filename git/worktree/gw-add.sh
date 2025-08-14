@@ -105,33 +105,14 @@ fi
 
 # Determine worktree path
 if [[ -n "$CUSTOM_PATH" ]]; then
-    # Handle both absolute and relative paths
-    if [[ "$CUSTOM_PATH" = /* ]]; then
-        # Absolute path
-        WORKTREE_PATH="$CUSTOM_PATH"
-    else
-        # Relative path - make it absolute
-        WORKTREE_PATH="$(pwd)/$CUSTOM_PATH"
-    fi
+    WORKTREE_PATH="$([[ "$CUSTOM_PATH" = /* ]] && echo "$CUSTOM_PATH" || echo "$(pwd)/$CUSTOM_PATH")"
 elif [[ -n "$BASE_PATH" ]]; then
-    # Use specified base directory
-    if [[ "$BASE_PATH" = /* ]]; then
-        # Absolute base path
-        BASE_DIR="$BASE_PATH"
-    else
-        # Relative base path - make it absolute
-        BASE_DIR="$(pwd)/$BASE_PATH"
-    fi
-    # Ensure base directory exists
-    if [[ ! -d "$BASE_DIR" ]]; then
-        print_error "Base directory does not exist: $BASE_DIR"
-        exit 1
-    fi
+    BASE_DIR="$([[ "$BASE_PATH" = /* ]] && echo "$BASE_PATH" || echo "$(pwd)/$BASE_PATH")"
+    [[ ! -d "$BASE_DIR" ]] && { print_error "Base directory does not exist: $BASE_DIR"; exit 1; }
     REPO_NAME=$(basename "$(get_main_worktree)")
     SAFE_BRANCH=$(sanitize_branch_name "$BRANCH")
     WORKTREE_PATH="${BASE_DIR}/${REPO_NAME}-${SAFE_BRANCH}"
 else
-    # Use default location (parent directory of main worktree)
     WORKTREE_PATH=$(get_default_worktree_location "$BRANCH")
 fi
 
@@ -141,113 +122,51 @@ if [[ -e "$WORKTREE_PATH" ]]; then
     exit 1
 fi
 
-# Build git worktree command
-GIT_CMD="git worktree add"
-
-# Add path
-GIT_CMD="$GIT_CMD \"$WORKTREE_PATH\""
-
-# Handle branch creation options
+# Create worktree
 if [[ "$FORCE_BRANCH" == true ]]; then
-    GIT_CMD="$GIT_CMD -B \"$BRANCH\""
-    if [[ -n "$FROM_BRANCH" ]]; then
-        GIT_CMD="$GIT_CMD \"$FROM_BRANCH\""
-    fi
+    git worktree add -B "$BRANCH" "$WORKTREE_PATH" ${FROM_BRANCH:+"$FROM_BRANCH"}
 elif [[ "$NEW_BRANCH" == true ]]; then
-    if ! branch_exists "$BRANCH"; then
-        GIT_CMD="$GIT_CMD -b \"$BRANCH\""
-        if [[ -n "$FROM_BRANCH" ]]; then
-            GIT_CMD="$GIT_CMD \"$FROM_BRANCH\""
-        fi
-    else
+    if branch_exists "$BRANCH"; then
         print_error "Branch '$BRANCH' already exists. Use -B to force."
         exit 1
     fi
+    git worktree add -b "$BRANCH" "$WORKTREE_PATH" ${FROM_BRANCH:+"$FROM_BRANCH"}
 else
-    # Existing branch
     if ! branch_exists "$BRANCH"; then
         print_error "Branch '$BRANCH' does not exist. Use -b to create it."
         exit 1
     fi
-    GIT_CMD="$GIT_CMD \"$BRANCH\""
+    git worktree add "$WORKTREE_PATH" "$BRANCH"
 fi
 
-# Set default merge target based on from branch if specified, otherwise current branch
+# Set default merge target
 if [[ -z "$TARGET_BRANCH" ]] && ([[ "$NEW_BRANCH" == true ]] || [[ "$FORCE_BRANCH" == true ]]); then
-    if [[ -n "$FROM_BRANCH" ]]; then
-        TARGET_BRANCH="$FROM_BRANCH"
-        print_info "Setting default merge target to base branch: $TARGET_BRANCH"
-    else
-        CURRENT_BRANCH=$(get_current_branch)
-        if [[ -n "$CURRENT_BRANCH" ]]; then
-            TARGET_BRANCH="$CURRENT_BRANCH"
-            print_info "Setting default merge target to current branch: $TARGET_BRANCH"
-        fi
-    fi
+    TARGET_BRANCH="${FROM_BRANCH:-$(get_current_branch)}"
 fi
 
-# Show what we're about to do
+# Show info
 print_header "Creating Worktree"
 echo "Branch: $BRANCH"
 echo "Path: $WORKTREE_PATH"
-if [[ -n "$FROM_BRANCH" ]]; then
-    echo "From: $FROM_BRANCH"
-fi
-if [[ -n "$TARGET_BRANCH" ]]; then
-    echo "Merge target: $TARGET_BRANCH"
-fi
-
-# Execute the command
-print_info "Executing: $GIT_CMD"
-eval $GIT_CMD
+[[ -n "$FROM_BRANCH" ]] && echo "From: $FROM_BRANCH"
+[[ -n "$TARGET_BRANCH" ]] && echo "Target: $TARGET_BRANCH"
 
 if [[ $? -eq 0 ]]; then
-    print_success "Worktree created successfully!"
+    print_success "Worktree created at: $WORKTREE_PATH"
     
-    # Set merge target branch if specified
+    # Set merge target and PR alias
     if [[ -n "$TARGET_BRANCH" ]]; then
-        print_info "Setting merge target branch to: $TARGET_BRANCH"
-        
-        # Store merge target in git config for this branch
         git config --local "branch.${BRANCH}.mergeTarget" "$TARGET_BRANCH"
         
-        # Set up the branch for proper PR targeting
-        if [[ "$NEW_BRANCH" == true ]] || [[ "$FORCE_BRANCH" == true ]]; then
-            cd "$WORKTREE_PATH"
-            
-            # Create a git alias for easy PR creation
-            if branch_exists "$TARGET_BRANCH"; then
-                git config --local "alias.pr-create" "!f() { \
-                    if command -v gh &> /dev/null; then \
-                        gh pr create --base $TARGET_BRANCH \"\$@\"; \
-                    else \
-                        echo 'Create PR with base branch: $TARGET_BRANCH'; \
-                        echo 'GitHub: gh pr create --base $TARGET_BRANCH'; \
-                        echo 'GitLab: glab mr create --target-branch $TARGET_BRANCH'; \
-                    fi; \
-                }; f"
-                
-                print_info "Created git alias 'pr-create' for this branch"
-                echo "Run 'git pr-create' to create a PR targeting $TARGET_BRANCH"
-            fi
-            
-            cd - > /dev/null
+        if [[ ("$NEW_BRANCH" == true || "$FORCE_BRANCH" == true) && -n "$(command -v gh)" ]]; then
+            (cd "$WORKTREE_PATH" && git config --local "alias.pr-create" "!gh pr create --base $TARGET_BRANCH")
+            print_info "Use 'git pr-create' to create PR targeting $TARGET_BRANCH"
         fi
-        
-        print_success "Merge target set to: $TARGET_BRANCH"
-        echo "You can view this with: git config branch.${BRANCH}.mergeTarget"
     fi
     
-    # Show post-creation info
-    echo ""
-    echo "To start working in the new worktree:"
-    echo "  cd $WORKTREE_PATH"
-    
-    # Optionally checkout to the new worktree
+    # Auto checkout if requested
     if [[ "$CHECKOUT_AFTER" == true ]]; then
-        print_info "Switching to new worktree..."
-        cd "$WORKTREE_PATH"
-        exec $SHELL
+        cd "$WORKTREE_PATH" && exec $SHELL
     fi
 else
     print_error "Failed to create worktree"
