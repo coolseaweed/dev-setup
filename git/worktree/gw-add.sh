@@ -172,12 +172,17 @@ else
     GIT_CMD="$GIT_CMD \"$BRANCH\""
 fi
 
-# Set default merge target to current branch if not specified
+# Set default merge target based on from branch if specified, otherwise current branch
 if [[ -z "$TARGET_BRANCH" ]] && ([[ "$NEW_BRANCH" == true ]] || [[ "$FORCE_BRANCH" == true ]]); then
-    CURRENT_BRANCH=$(get_current_branch)
-    if [[ -n "$CURRENT_BRANCH" ]]; then
-        TARGET_BRANCH="$CURRENT_BRANCH"
-        print_info "Setting default merge target to current branch: $TARGET_BRANCH"
+    if [[ -n "$FROM_BRANCH" ]]; then
+        TARGET_BRANCH="$FROM_BRANCH"
+        print_info "Setting default merge target to base branch: $TARGET_BRANCH"
+    else
+        CURRENT_BRANCH=$(get_current_branch)
+        if [[ -n "$CURRENT_BRANCH" ]]; then
+            TARGET_BRANCH="$CURRENT_BRANCH"
+            print_info "Setting default merge target to current branch: $TARGET_BRANCH"
+        fi
     fi
 fi
 
@@ -210,16 +215,8 @@ if [[ $? -eq 0 ]]; then
         if [[ "$NEW_BRANCH" == true ]] || [[ "$FORCE_BRANCH" == true ]]; then
             cd "$WORKTREE_PATH"
             
-            # Create a note file for PR creation
-            echo "# Pull Request Info" > .git-pr-info
-            echo "TARGET_BRANCH=$TARGET_BRANCH" >> .git-pr-info
-            echo "CREATED_FROM=$FROM_BRANCH" >> .git-pr-info
-            echo "CREATED_DATE=$(date)" >> .git-pr-info
-            
-            # Try to set upstream to target branch (some PR systems use this)
+            # Create a git alias for easy PR creation
             if branch_exists "$TARGET_BRANCH"; then
-                # Don't set upstream to target branch as that's confusing
-                # Instead, we'll create a git alias for easy PR creation
                 git config --local "alias.pr-create" "!f() { \
                     if command -v gh &> /dev/null; then \
                         gh pr create --base $TARGET_BRANCH \"\$@\"; \
