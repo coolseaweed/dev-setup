@@ -54,7 +54,10 @@ gw-add.sh -p ../other-location/feature feature/branch
 # 특정 베이스 디렉토리에 worktree 생성
 gw-add.sh -P ~/work-projects feature/branch
 
-# 머지 타겟 브랜치 지정하여 생성
+# 새 브랜치 생성 (현재 브랜치가 자동으로 머지 타겟이 됨)
+gw-add.sh -b feature/new
+
+# 머지 타겟을 main으로 명시적 지정
 gw-add.sh -b feature/new -t main
 
 # develop에서 생성하고 main을 머지 타겟으로 설정
@@ -71,7 +74,7 @@ gw-add.sh -bc feature/new-feature
 - `-f, --from BRANCH`: 특정 브랜치에서 새 브랜치 생성
 - `-p, --path PATH`: 커스텀 경로 지정 (절대/상대 경로 모두 지원)
 - `-P, --base-path DIR`: worktree 생성할 베이스 디렉토리 지정
-- `-t, --target BRANCH`: 머지 타겟 브랜치 설정 (git config에 저장됨)
+- `-t, --target BRANCH`: 머지 타겟 브랜치 설정 (기본값: 새 브랜치 생성 시 현재 브랜치)
 
 ### gw-list.sh - Worktree 목록 조회
 
@@ -183,16 +186,19 @@ gw-clean.sh -af
 ### 기능 개발 워크플로우
 
 ```bash
-# 1. 새 기능 브랜치와 worktree 생성
+# 0. develop 브랜치에서 시작
+cd main-repo && git checkout develop
+
+# 1. 새 기능 브랜치와 worktree 생성 (develop이 자동으로 머지 타겟이 됨)
 gw-add.sh -bc feature/new-feature
 
 # 2. 작업 진행...
 
-# 3. 메인으로 돌아가기
-gw-switch.sh -m
+# 3. PR 생성 (자동으로 develop을 타겟으로)
+gw-pr.sh "Add new feature"
 
-# 4. 다시 기능 브랜치로 전환
-gw-switch.sh feature/new-feature
+# 4. 메인으로 돌아가기
+gw-switch.sh -m
 
 # 5. 작업 완료 후 정리
 gw-remove.sh feature/new-feature
