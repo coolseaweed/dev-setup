@@ -164,6 +164,30 @@ if [[ $? -eq 0 ]]; then
         fi
     fi
     
+    # Copy .env* files from main worktree
+    MAIN_WORKTREE=$(get_main_worktree)
+    if [[ -n "$MAIN_WORKTREE" ]]; then
+        ENV_FILES=$(find "$MAIN_WORKTREE" -maxdepth 1 -name ".env*" -type f 2>/dev/null)
+        if [[ -n "$ENV_FILES" ]]; then
+            print_info "Copying .env files..."
+            while IFS= read -r env_file; do
+                cp "$env_file" "$WORKTREE_PATH/"
+                echo "  - $(basename "$env_file")"
+            done <<< "$ENV_FILES"
+        fi
+    fi
+    
+    # Run npm install if package.json exists
+    if [[ -f "$WORKTREE_PATH/package.json" ]]; then
+        print_info "Running npm install..."
+        (cd "$WORKTREE_PATH" && npm install)
+        if [[ $? -eq 0 ]]; then
+            print_success "Dependencies installed successfully"
+        else
+            print_warning "npm install failed, but worktree was created"
+        fi
+    fi
+    
     # Auto checkout if requested
     if [[ "$CHECKOUT_AFTER" == true ]]; then
         cd "$WORKTREE_PATH" && exec $SHELL
