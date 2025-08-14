@@ -178,10 +178,10 @@ alias claude-sudo='claude --dangerously-skip-permissions'
 
 
 # Git worktree management scripts
-# export PATH="$PATH:~/dev-setup/git/worktree"
+export PATH="$PATH:~/dev-setup/git/worktree"
 # alias gwa='gw-add.sh'
-# alias gwl='gw-list.sh'
-# alias gwr='gw-remove.sh'
-# alias gws='gw-switch.sh'
+alias gwl='gw-list.sh'
+alias gwr='gw-remove.sh'
+alias gws='gw-switch.sh'
 # alias gwc='gw-clean.sh'
 alias gw="git worktree"
