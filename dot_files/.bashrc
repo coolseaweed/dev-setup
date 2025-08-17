@@ -173,8 +173,8 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 
 # Claude Code aliases
-alias claude-sudo='claude --dangerously-skip-permissions'
-
+alias cs='claude --dangerously-skip-permissions'
+alias c="claude"
 
 
 # Git worktree management scripts
@@ -185,7 +185,7 @@ alias gwr='gw-remove.sh'
 alias gws='gw-switch.sh'
 # alias gwc='gw-clean.sh'
 alias gw="git worktree"
-
+alias g="git"
 
 # tmux
 alias t='tmux'
@@ -193,3 +193,4 @@ alias ta='tmux attach -t'
 alias tn='tmux new -s'
 alias tl='tmux ls'
 alias tk='tmux kill-session -t'
+

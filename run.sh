@@ -25,6 +25,11 @@ function envSetup() {
     echo "Symlinking dotfiles"
     ln -s $DOTFILES/skhdrc.symlink $HOME/.skhdrc
 
+    # Setup Claude global configuration
+    echo "Setting up Claude global configuration"
+    mkdir -p ~/.claude
+    ln -sf $(realpath ./context/CLAUDE.md) ~/.claude/CLAUDE.md
+
 
 }
 

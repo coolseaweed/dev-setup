@@ -175,6 +175,17 @@ fi
 
 if [[ $? -eq 0 ]]; then
     print_success "Worktree removed successfully"
+    
+    # Check if the directory still exists (might have leftover files like .next, node_modules, etc.)
+    if [[ -d "$WORKTREE_PATH" ]]; then
+        print_info "Removing remaining directory and its contents..."
+        rm -rf "$WORKTREE_PATH"
+        if [[ $? -eq 0 ]]; then
+            print_success "Directory completely removed"
+        else
+            print_warning "Failed to remove remaining directory: $WORKTREE_PATH"
+        fi
+    fi
 else
     print_error "Failed to remove worktree"
     exit 1
