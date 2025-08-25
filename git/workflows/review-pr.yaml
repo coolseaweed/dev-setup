@@ -1,43 +1,24 @@
 # .github/workflows/review-pr.yml
+# Latest Created: 2024-06-26 16:30:00
 name: Auto Code Review
-
 on:
   pull_request:
     types: [opened, synchronize]
-  pull_request_review:
-    types: [submitted]
-  pull_request_review_comment:
-    types: [created]
 
 permissions:
-  pull-requests: write  # PR 리뷰 작성에 필요
-  contents: write       # PR 내용 읽기에 필요 
-  id-token: write
-  issues: write
-  actions: read
+  pull-requests: write # PR 리뷰 작성에 필요
+  contents: read # PR 내용 분석에 필요
+  id-token: write # claude-code-action OIDC 인증에 필요
 
 jobs:
-  claude:
-    if: |
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
-      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
+  review:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: anthropics/claude-code-action@beta
         with:
-          fetch-depth: 1
-
-      - name: Run Claude Code
-        id: claude
-        uses: anthropics/claude-code-action@beta
-        custom_instructions: |
-          변경 내용을 코드 품질, 보안, 성능 관점에서 리뷰해주세요.
-          Critical 이슈가 있다면 반드시 지적해주세요.
-          모든 리뷰는 한국어로 작성해주세요.
-        with:
-          # 원하는 인증 방법 사용
-          # anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          mode: experimental-review
+          custom_instructions: |
+            변경 내용을 코드 품질, 보안, 성능 관점에서 리뷰해주세요
+            Critical 이슈가 있다면 반드시 지적해주세요
+            리뷰는 한국어로 작성해주세요
