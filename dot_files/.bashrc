@@ -156,29 +156,40 @@ export PROMPT_DIRTRIM=0
 #complete -F __start_kubectl k
 #export KUBE_EDITOR="vim"
 
-eval "$(/opt/homebrew/bin/brew shellenv)"
 
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
 export NVM_DIR=~/.nvm
-source $(brew --prefix nvm)/nvm.sh
+
 alias docker="/Applications/Docker.app/Contents/Resources/bin/docker"
 alias duckdb="/Users/tom/.duckdb/cli/latest/duckdb"
 
+# --------------------------
+# YABAI & SKHD SETUP
+# --------------------------
 # skhd --reload
 # skhd --restart-service
-# bun
+
+# --------------------------
+# BUN SETUP
+# --------------------------
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
 
-# Claude Code aliases
+
+# --------------------------
+# CLAUDE SETUP
+# --------------------------
 alias cs='claude --dangerously-skip-permissions'
 alias c="claude"
 
 
-# Git worktree management scripts
+# --------------------------
+# GIT SETUP
+# --------------------------
 export PATH="$PATH:~/dev-setup/git/worktree"
+export PATH="$PATH:~/dev-setup/git/"
 alias gwa='gw-add.sh'
 alias gwl='gw-list.sh'
 alias gwr='gw-remove.sh'
@@ -187,10 +198,18 @@ alias gws='gw-switch.sh'
 alias gw="git worktree"
 alias g="git"
 
-# tmux
+# --------------------------
+# TMUX SETUP
+# --------------------------
 alias t='tmux'
 alias ta='tmux attach -t'
 alias tn='tmux new -s'
 alias tl='tmux ls'
 alias tk='tmux kill-session -t'
 
+
+# --------------------------
+# MAC SETUP
+# --------------------------
+# eval "$(/opt/homebrew/bin/brew shellenv)"
+# source $(brew --prefix nvm)/nvm.sh

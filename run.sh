@@ -28,7 +28,7 @@ function envSetup() {
     # Setup Claude global configuration
     echo "Setting up Claude global configuration"
     mkdir -p ~/.claude
-    ln -sf $(realpath ./context/CLAUDE.md) ~/.claude/CLAUDE.md
+    ln -sf $(realpath ./claude/CLAUDE.md) ~/.claude/CLAUDE.md
 
 
 }
